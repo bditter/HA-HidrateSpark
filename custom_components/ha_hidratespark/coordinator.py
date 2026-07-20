@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from typing import Optional
 
 from homeassistant.components import bluetooth
@@ -61,6 +62,7 @@ class HidrateSparkCoordinator:
         self._task: Optional[asyncio.Task] = None
         self._unsub_advert: Optional[CALLBACK_TYPE] = None
         self._battery_pct: Optional[int] = None
+        self.last_update_ts: Optional[float] = None
         self._connected = False
         self.last_error: Optional[str] = None
 
@@ -239,18 +241,23 @@ class HidrateSparkCoordinator:
     async def _handle_sip(
         self, timestamp: float, volume_ml: int, _total_reported_ml: int
     ) -> None:
+        self._mark_data_update()
         if self.state.add_sip(Sip(timestamp=timestamp, volume_ml=volume_ml)):
             await self.state.async_save()
-            self._notify()
+        self._notify()
 
     async def _handle_battery(self, pct: int) -> None:
+        self._mark_data_update()
         if pct == self._battery_pct:
+            self._notify()
             return
         self._battery_pct = pct
         self._notify()
 
     async def _handle_serial(self, serial_number: str) -> None:
+        self._mark_data_update()
         if serial_number == self.serial_number:
+            self._notify()
             return
         self.serial_number = serial_number
         data = dict(self.entry.data)
@@ -265,11 +272,13 @@ class HidrateSparkCoordinator:
         self._notify()
 
     async def _handle_refill(self, source: str, weight_full_raw: Optional[int]) -> None:
+        self._mark_data_update()
         self.state.refill(source, weight_full_raw)
         await self.state.async_save()
         self._notify()
 
     async def _handle_weight(self, raw: int, _low_byte: int) -> None:
+        self._mark_data_update()
         fill_changed = self.state.update_fill_from_weight(raw)
         if fill_changed:
             # Persist sparingly — fill changes happen often. Only on real change.
@@ -279,6 +288,9 @@ class HidrateSparkCoordinator:
         # an anchor is set and fill is unchanged, but it still records the
         # latest stable raw reading).
         self._notify()
+
+    def _mark_data_update(self) -> None:
+        self.last_update_ts = time.time()
 
     @callback
     def _notify(self) -> None:

@@ -1,5 +1,11 @@
 # Changelog
 
+## What's new in v1.2.3
+
+### Added
+- Added a **Last update time** sensor that records when bottle data was most
+  recently received by the integration.
+
 ## What's new in v1.2.2
 
 ### Added

@@ -69,6 +69,11 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TIMESTAMP,
     ),
     SensorEntityDescription(
+        key="last_update_time",
+        translation_key="last_update_time",
+        device_class=SensorDeviceClass.TIMESTAMP,
+    ),
+    SensorEntityDescription(
         key="serial_number",
         translation_key="serial_number",
         icon="mdi:identifier",
@@ -137,6 +142,12 @@ class HidrateSparkSensor(HidrateSparkEntity, SensorEntity):
             if state.last_sip is None:
                 return None
             return datetime.fromtimestamp(state.last_sip.timestamp, tz=timezone.utc)
+        if key == "last_update_time":
+            if self._coordinator.last_update_ts is None:
+                return None
+            return datetime.fromtimestamp(
+                self._coordinator.last_update_ts, tz=timezone.utc
+            )
         if key == "serial_number":
             return self._coordinator.serial_number
         if key == "sips_today":
