@@ -118,6 +118,9 @@ the app disconnects. Recommended setups:
 
 ## Acknowledgements
 
+- This project is based on
+  [HA-HidrateSpark-Bluetooth-Proxy](https://github.com/loryanstrant/HA-HidrateSpark-Bluetooth-Proxy)
+  by [Loryan Strant](https://github.com/loryanstrant).
 - BLE handshake sequence and frame layout originally from
   [HydroSync](https://github.com/maxperron/HydroSync) (GPL-3.0).
 - Cap-state and weight-sensor characteristics reverse-engineered against
