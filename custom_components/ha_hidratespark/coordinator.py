@@ -62,6 +62,8 @@ class HidrateSparkCoordinator:
         self._task: Optional[asyncio.Task] = None
         self._unsub_advert: Optional[CALLBACK_TYPE] = None
         self._battery_pct: Optional[int] = None
+        self.last_sip_percent: Optional[int] = None
+        self.last_reported_total_raw: Optional[int] = None
         self.last_update_ts: Optional[float] = None
         self._connected = False
         self.last_error: Optional[str] = None
@@ -239,14 +241,19 @@ class HidrateSparkCoordinator:
     # ---------------------------------------------------------- BLE callbacks
 
     async def _handle_sip(
-        self, timestamp: float, volume_ml: int, total_reported_ml: int
+        self,
+        timestamp: float,
+        volume_ml: int,
+        sip_percent: int,
+        total_reported_ml: int,
     ) -> None:
         self._mark_data_update()
+        self.last_sip_percent = sip_percent
+        self.last_reported_total_raw = total_reported_ml
         if self.state.add_sip(
             Sip(
                 timestamp=timestamp,
                 volume_ml=volume_ml,
-                reported_total_ml=total_reported_ml,
             )
         ):
             await self.state.async_save()

@@ -68,6 +68,21 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
         suggested_display_precision=2,
     ),
     SensorEntityDescription(
+        key="last_sip_percent_raw",
+        translation_key="last_sip_percent_raw",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    SensorEntityDescription(
+        key="last_reported_total_raw",
+        translation_key="last_reported_total_raw",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+    ),
+    SensorEntityDescription(
         key="last_sip_time",
         translation_key="last_sip_time",
         device_class=SensorDeviceClass.TIMESTAMP,
@@ -142,6 +157,10 @@ class HidrateSparkSensor(HidrateSparkEntity, SensorEntity):
             return state.current_fill_pct
         if key == "last_sip_volume":
             return _ml_to_fl_oz(state.last_sip.volume_ml) if state.last_sip else None
+        if key == "last_sip_percent_raw":
+            return self._coordinator.last_sip_percent
+        if key == "last_reported_total_raw":
+            return self._coordinator.last_reported_total_raw
         if key == "last_sip_time":
             if state.last_sip is None:
                 return None
@@ -167,7 +186,12 @@ class HidrateSparkSensor(HidrateSparkEntity, SensorEntity):
         # Live-only readings (battery, raw weight) become unavailable when
         # the bottle is disconnected. Cached/accumulated values (totals,
         # current fill, last sip) remain meaningful across disconnects.
-        if self.entity_description.key in ("battery", "weight_raw"):
+        if self.entity_description.key in (
+            "battery",
+            "weight_raw",
+            "last_sip_percent_raw",
+            "last_reported_total_raw",
+        ):
             return self._coordinator.connected
         return True
 

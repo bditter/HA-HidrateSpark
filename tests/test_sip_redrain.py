@@ -140,8 +140,9 @@ class CorruptFrameTest(unittest.TestCase):
         frame = bytearray([1, 10, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x05])
         asyncio.run(c._on_data_notify(None, frame))
         self.assertEqual(c._on_sip.await_count, 1)
-        _ts, volume, total = c._on_sip.await_args.args
+        _ts, volume, pct, total = c._on_sip.await_args.args
         self.assertEqual(volume, 95)
+        self.assertEqual(pct, 10)
         self.assertEqual(total, 100)
 
 

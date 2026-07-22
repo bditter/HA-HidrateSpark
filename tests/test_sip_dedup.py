@@ -54,7 +54,7 @@ class DedupPersistenceTest(unittest.TestCase):
         )
         self.assertEqual(b2.lifetime_total_ml, 220)
 
-    def test_reported_total_delta_corrects_percent_volume(self):
+    def test_reported_total_does_not_change_percent_volume(self):
         b = new_bottle(887)
 
         self.assertTrue(
@@ -76,9 +76,10 @@ class DedupPersistenceTest(unittest.TestCase):
             )
         )
 
-        self.assertEqual(b.total_today_ml, 181)
-        self.assertEqual(b.sips[0].volume_ml, 91)
-        self.assertEqual(b.last_sip.volume_ml, 90)
+        self.assertEqual(b.total_today_ml, 178)
+        self.assertEqual(b.sips[0].volume_ml, 89)
+        self.assertEqual(b.last_sip.volume_ml, 89)
+        self.assertEqual(b.last_sip.reported_total_ml, 181)
 
     def test_reported_total_replay_is_deduped_after_restart(self):
         b1 = new_bottle(887)

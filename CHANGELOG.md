@@ -1,5 +1,15 @@
 # Changelog
 
+## What's new in v1.2.6-beta.1
+
+### Added
+- Added disabled-by-default diagnostic sensors for the raw sip percent and raw
+  reported total fields sent by the bottle.
+
+### Changed
+- Sip totals are back to using the bottle's raw percent-derived sip volume while
+  the reported-total field is investigated.
+
 ## What's new in v1.2.5
 
 ### Fixed

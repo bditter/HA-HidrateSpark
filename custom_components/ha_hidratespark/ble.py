@@ -45,8 +45,8 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 # Callback signatures
-SipCallback = Callable[[float, int, int], Awaitable[None]]
-"""await on_sip(timestamp_unix_s, volume_ml, total_reported_ml)."""
+SipCallback = Callable[[float, int, int, int], Awaitable[None]]
+"""await on_sip(timestamp_unix_s, volume_ml, sip_percent, total_reported_ml)."""
 
 BatteryCallback = Callable[[int], Awaitable[None]]
 SerialCallback = Callable[[str], Awaitable[None]]
@@ -391,7 +391,9 @@ class BottleClient:
         )
 
         try:
-            await self._on_sip(float(ts), int(volume_ml), int(total_reported))
+            await self._on_sip(
+                float(ts), int(volume_ml), int(pct), int(total_reported)
+            )
         except Exception as err:  # noqa: BLE001
             _LOGGER.warning("sip handler error: %s", err)
 

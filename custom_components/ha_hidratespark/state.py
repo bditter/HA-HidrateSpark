@@ -379,8 +379,6 @@ class BottleState:
             ):
                 return False
 
-        sip = self._with_reported_total_volume(sip)
-
         # Day rollover is keyed on wall-clock *now* (in HA's configured local
         # timezone), never on the sip's own timestamp. Buffered sips replayed
         # on reconnect carry old timestamps; keying rollover off them would roll
@@ -417,51 +415,6 @@ class BottleState:
             self.current_fill_ml = max(0, self.current_fill_ml - sip.volume_ml)
 
         return True
-
-    def _with_reported_total_volume(self, sip: Sip) -> Sip:
-        """Prefer the bottle's cumulative reported mL delta when plausible."""
-        reported_total = sip.reported_total_ml
-        if reported_total is None or reported_total <= 0:
-            return sip
-
-        previous_total = self.last_reported_total_ml
-        self.last_reported_total_ml = reported_total
-        tolerance_ml = max(30, round(sip.volume_ml * 0.50))
-        if previous_total is None:
-            if (
-                reported_total <= self.bottle_size_ml
-                and abs(reported_total - sip.volume_ml) <= tolerance_ml
-            ):
-                return Sip(
-                    timestamp=sip.timestamp,
-                    volume_ml=reported_total,
-                    reported_total_ml=reported_total,
-                )
-            return sip
-
-        delta = reported_total - previous_total
-        if delta <= 0:
-            return sip
-
-        if delta > self.bottle_size_ml or abs(delta - sip.volume_ml) > tolerance_ml:
-            _LOGGER.debug(
-                "ignoring implausible reported sip delta: pct=%dml delta=%dml",
-                sip.volume_ml,
-                delta,
-            )
-            return sip
-
-        if delta != sip.volume_ml:
-            _LOGGER.debug(
-                "corrected sip from percent %dml to reported delta %dml",
-                sip.volume_ml,
-                delta,
-            )
-        return Sip(
-            timestamp=sip.timestamp,
-            volume_ml=delta,
-            reported_total_ml=reported_total,
-        )
 
     @property
     def total_today_ml(self) -> int:

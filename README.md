@@ -99,6 +99,8 @@ the app disconnects. Recommended setups:
 | Current fill | sensor (fl oz) |
 | Current fill percent | sensor (%) |
 | Last sip volume | sensor (fl oz) |
+| Last sip percent (raw) | diagnostic, disabled by default |
+| Last reported total (raw) | diagnostic, disabled by default |
 | Last sip time | sensor (timestamp) |
 | Last update time | sensor (timestamp) |
 | Serial number | sensor |

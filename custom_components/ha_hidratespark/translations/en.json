@@ -42,6 +42,8 @@
       "current_fill": { "name": "Current fill" },
       "current_fill_pct": { "name": "Current fill percent" },
       "last_sip_volume": { "name": "Last sip volume" },
+      "last_sip_percent_raw": { "name": "Last sip percent (raw)" },
+      "last_reported_total_raw": { "name": "Last reported total (raw)" },
       "last_sip_time": { "name": "Last sip time" },
       "last_update_time": { "name": "Last update time" },
       "serial_number": { "name": "Serial number" },
