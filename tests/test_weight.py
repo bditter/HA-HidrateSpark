@@ -107,6 +107,20 @@ class WeightCalibrationTest(unittest.TestCase):
 
         self.assertEqual(b.refills_today, 0)
 
+    def test_tiny_weight_jitter_does_not_move_fill(self):
+        b = new_bottle(887)
+        b.update_fill_from_weight(35041)
+        b.calibrate_full()
+        b.update_fill_from_weight(33576)
+        b.calibrate_empty()
+        b.update_fill_from_weight(33576 + 100)
+        fill = b.current_fill_ml
+
+        self.assertFalse(b.update_fill_from_weight(33576 + 103))
+        self.assertEqual(b.current_fill_ml, fill)
+        self.assertTrue(b.update_fill_from_weight(33576 + 110))
+        self.assertGreater(b.current_fill_ml, fill)
+
     def test_reset_totals_keeps_fill_and_calibration(self):
         b = new_bottle(887)
         b.update_fill_from_weight(34656)

@@ -1,5 +1,13 @@
 # Changelog
 
+## What's new in v1.2.5
+
+### Fixed
+- Current fill now ignores tiny weight-derived changes under 5 mL so raw sensor
+  jitter does not show up as constant 0.03-0.08 fl oz movement.
+- Volume sensors now publish native two-decimal fluid ounces so the default
+  Home Assistant state is 0.00 rather than 0.000.
+
 ## What's new in v1.2.4
 
 ### Fixed

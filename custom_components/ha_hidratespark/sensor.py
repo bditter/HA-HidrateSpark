@@ -16,7 +16,7 @@ from homeassistant.const import PERCENTAGE, EntityCategory, UnitOfVolume
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import DOMAIN, ML_PER_FLUID_OUNCE
 from .coordinator import HidrateSparkCoordinator
 from .entity import HidrateSparkEntity
 
@@ -33,7 +33,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="water_today",
         translation_key="water_today",
-        native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+        native_unit_of_measurement=UnitOfVolume.FLUID_OUNCES,
         device_class=SensorDeviceClass.VOLUME,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=2,
@@ -41,7 +41,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="water_lifetime",
         translation_key="water_lifetime",
-        native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+        native_unit_of_measurement=UnitOfVolume.FLUID_OUNCES,
         device_class=SensorDeviceClass.VOLUME,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=2,
@@ -49,7 +49,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="current_fill",
         translation_key="current_fill",
-        native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+        native_unit_of_measurement=UnitOfVolume.FLUID_OUNCES,
         device_class=SensorDeviceClass.VOLUME_STORAGE,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
@@ -63,7 +63,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="last_sip_volume",
         translation_key="last_sip_volume",
-        native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+        native_unit_of_measurement=UnitOfVolume.FLUID_OUNCES,
         device_class=SensorDeviceClass.VOLUME_STORAGE,
         suggested_display_precision=2,
     ),
@@ -133,15 +133,15 @@ class HidrateSparkSensor(HidrateSparkEntity, SensorEntity):
         if key == "battery":
             return self._coordinator.battery_pct
         if key == "water_today":
-            return state.total_today_ml
+            return _ml_to_fl_oz(state.total_today_ml)
         if key == "water_lifetime":
-            return state.lifetime_total_ml
+            return _ml_to_fl_oz(state.lifetime_total_ml)
         if key == "current_fill":
-            return state.current_fill_ml
+            return _ml_to_fl_oz(state.current_fill_ml)
         if key == "current_fill_pct":
             return state.current_fill_pct
         if key == "last_sip_volume":
-            return state.last_sip.volume_ml if state.last_sip else None
+            return _ml_to_fl_oz(state.last_sip.volume_ml) if state.last_sip else None
         if key == "last_sip_time":
             if state.last_sip is None:
                 return None
@@ -170,3 +170,7 @@ class HidrateSparkSensor(HidrateSparkEntity, SensorEntity):
         if self.entity_description.key in ("battery", "weight_raw"):
             return self._coordinator.connected
         return True
+
+
+def _ml_to_fl_oz(value_ml: int | float) -> float:
+    return round(value_ml / ML_PER_FLUID_OUNCE, 2)

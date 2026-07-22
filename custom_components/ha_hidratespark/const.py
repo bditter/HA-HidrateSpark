@@ -15,6 +15,7 @@ CONF_NAME_PREFIX: Final = "name_prefix"
 
 DEFAULT_SIZE_ML: Final = 591
 DEFAULT_NAME_PREFIX: Final = "h2o"
+ML_PER_FLUID_OUNCE: Final = 29.5735295625
 
 # Reconnect tuning
 RECONNECT_BACKOFF_INITIAL: Final = 1.0
@@ -75,6 +76,7 @@ REFILL_MIN_DELTA_RAW: Final = 60
 WEIGHT_REFILL_LOW_PCT: Final = 80
 WEIGHT_REFILL_FULL_PCT: Final = 95
 WEIGHT_REFILL_MIN_INCREASE_ML: Final = 150
+FILL_UPDATE_DEADBAND_ML: Final = 5
 
 # 13-step handshake from HydroSync. Each tuple is (target_char, hex_payload).
 # Writes are 50 ms apart.

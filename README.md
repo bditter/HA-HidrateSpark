@@ -1,7 +1,7 @@
 # HA Hidratespark — Home Assistant integration
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?style=flat-square)](https://github.com/hacs/integration)
-[![Version](https://img.shields.io/github/v/tag/bditter/HA-Hidratespark?label=version&style=flat-square)](https://github.com/bditter/HA-Hidratespark/releases/tag/v1.2.4)
+[![Version](https://img.shields.io/github/v/tag/bditter/HA-Hidratespark?label=version&style=flat-square)](https://github.com/bditter/HA-Hidratespark/releases/tag/v1.2.5)
 [![License](https://img.shields.io/github/license/bditter/HA-Hidratespark?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/bditter/HA-Hidratespark?style=flat-square)](https://github.com/bditter/HA-Hidratespark/commits)
 [![Stars](https://img.shields.io/github/stars/bditter/HA-Hidratespark?style=flat-square)](https://github.com/bditter/HA-Hidratespark/stargazers)
@@ -94,11 +94,11 @@ the app disconnects. Recommended setups:
 | Entity | Type |
 |---|---|
 | Battery | sensor (%, `battery`) |
-| Water today | sensor (mL, `total_increasing`) |
-| Water lifetime | sensor (mL, `total_increasing`) |
-| Current fill | sensor (mL) |
+| Water today | sensor (fl oz, `total_increasing`) |
+| Water lifetime | sensor (fl oz, `total_increasing`) |
+| Current fill | sensor (fl oz) |
 | Current fill percent | sensor (%) |
-| Last sip volume | sensor (mL) |
+| Last sip volume | sensor (fl oz) |
 | Last sip time | sensor (timestamp) |
 | Last update time | sensor (timestamp) |
 | Serial number | sensor |

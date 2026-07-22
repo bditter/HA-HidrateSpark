@@ -21,6 +21,7 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     RAW_UNITS_PER_ML,
+    FILL_UPDATE_DEADBAND_ML,
     SIP_DEDUP_TIMESTAMP_TOLERANCE_S,
     SIP_DEDUP_WINDOW,
     STORAGE_KEY_PREFIX,
@@ -351,6 +352,11 @@ class BottleState:
             )
         new_fill = max(0, min(self.bottle_size_ml, new_fill))
         self._maybe_count_weight_refill(previous_fill_ml, new_fill)
+        if (
+            new_fill not in (0, self.bottle_size_ml)
+            and abs(new_fill - self.current_fill_ml) < FILL_UPDATE_DEADBAND_ML
+        ):
+            return False
         if new_fill != self.current_fill_ml:
             self.current_fill_ml = new_fill
             return True
